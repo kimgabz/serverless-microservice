@@ -1,0 +1,57 @@
+service:
+  name: trade-service
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  environment:
+    TRADES_TABLE_NAME: ${self:custom.TradesTable.name}
+  iamRoleStatements:
+    - ${file(iam/TradesTableIAM.yml):TradesTableIAM}
+
+resources:
+  Resources:
+    TradesTable: ${file(resources/TradesTable.yml):TradesTable}
+
+functions:
+  createTrade:
+    handler: src/handlers/createTrade.handler
+    events:
+      - http:
+          method: POST
+          path: /trade
+  getTrades:
+    handler: src/handlers/getTrades.handler
+    events:
+      - http:
+          method: GET
+          path: /trades
+  getTrade:
+    handler: src/handlers/getTrade.handler
+    events:
+      - http:
+          method: GET
+          path: /trade/{id}
+  placeBid:
+    handler: src/handlers/placeBid.handler
+    events:
+      - http:
+          method: PATCH
+          path: /trade/{id}/bid
+  processTrades:
+    handler: src/handlers/processTrades.handler
+    # events:
+    #   - schedule: rate(1 minute)
+custom:
+  TradesTable:
+    name: !Ref TradesTable
+    arn: !GetAtt TradesTable.Arn
+  bundle:
+    linting: false

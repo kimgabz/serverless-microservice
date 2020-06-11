@@ -1,0 +1,14 @@
+TradesTableIAM:
+  Effect: Allow
+  Action:
+    - dynamodb:PutItem
+    - dynamodb:Scan
+    - dynamodb:GetItem
+    - dynamodb:UpdateItem
+    - dynamodb:Query
+  Resource:
+    - ${self:custom.TradesTable.arn}
+    - !Join [
+        '/',
+        ['${self:custom.TradesTable.arn}', 'index', 'statusAndEndDate'],
+      ]
