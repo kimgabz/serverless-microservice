@@ -27,29 +27,38 @@ functions:
       - http:
           method: POST
           path: /trade
+          authorizer: ${self:custom.authorizer}
+
   getTrades:
     handler: src/handlers/getTrades.handler
     events:
       - http:
           method: GET
           path: /trades
+          authorizer: ${self:custom.authorizer}
+
   getTrade:
     handler: src/handlers/getTrade.handler
     events:
       - http:
           method: GET
           path: /trade/{id}
+          authorizer: ${self:custom.authorizer}
+
   placeBid:
     handler: src/handlers/placeBid.handler
     events:
       - http:
           method: PATCH
           path: /trade/{id}/bid
+          authorizer: ${self:custom.authorizer}
+
   processTrades:
     handler: src/handlers/processTrades.handler
     # events:
     #   - schedule: rate(1 minute)
 custom:
+  authorizer: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:auth-service-${self:provider.stage}-auth
   TradesTable:
     name: !Ref TradesTable
     arn: !GetAtt TradesTable.Arn

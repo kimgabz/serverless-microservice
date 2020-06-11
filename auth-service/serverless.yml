@@ -1,4 +1,3 @@
-
 service:
   name: auth-service
 
@@ -9,6 +8,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   memorySize: 128
+  region: eu-west-1
   environment:
     AUTH0_PUBLIC_KEY: ${file(secret.pem)}
 
