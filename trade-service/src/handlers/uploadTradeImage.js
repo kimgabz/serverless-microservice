@@ -2,6 +2,7 @@ import middy from '@middy/core';
 import validator from '@middy/validator';
 import httpErrorHandler from '@middy/http-error-handler';
 import createError from 'http-errors';
+import cors from '@middy/http-cors';
 
 import { getTradeById } from './getTrade';
 import { uploadImageToS3 } from '../util/uploadImageToS3';
@@ -38,4 +39,5 @@ export async function uploadTradeImage(event) {
 
 export const handler = middy(uploadTradeImage)
   .use(httpErrorHandler())
-  .use(validator({ inputSchema: uploadImageSchema }));
+  .use(validator({ inputSchema: uploadImageSchema }))
+  .use(cors());
