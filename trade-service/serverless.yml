@@ -13,8 +13,10 @@ provider:
   region: eu-west-1
   environment:
     TRADES_TABLE_NAME: ${self:custom.TradesTable.name}
+    MAIL_QUEUE_URL: ${self:custom.MailQueue.url}
   iamRoleStatements:
     - ${file(iam/TradesTableIAM.yml):TradesTableIAM}
+    - ${file(iam/MailQueueIAM.yml):MailQueueIAM}
 
 resources:
   Resources:
@@ -62,5 +64,8 @@ custom:
   TradesTable:
     name: !Ref TradesTable
     arn: !GetAtt TradesTable.Arn
+  MailQueue:
+    arn: ${cf:notification-service-${self:provider.stage}.MailQueueArn}
+    url: ${cf:notification-service-${self:provider.stage}.MailQueueUrl}
   bundle:
     linting: false
